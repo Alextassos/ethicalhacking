@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Security Definitive Cheat Sheet | Personal Cyber Book</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+<nav>
+    <h1>📖 Cyber Book</h1>
+    <ul>
+        <li><a href="#nmap" class="nav-nmap">1. Nmap (Network Mapper)</a></li>
+        <li><a href="#gobuster" class="nav-gobuster">2. Gobuster (Web/DNS)</a></li>
+        <li><a href="#hydra" class="nav-hydra">3. Hydra (Brute Forcer)</a></li>
+        <li><a href="#enum4linux" class="nav-enum">4. Enum4linux (SMB)</a></li>
+        <li><a href="#nikto" class="nav-nikto">5. Nikto (Web Scanner)</a></li>
+        <li><a href="#sqlmap" class="nav-sqlmap">6. SQLMap (SQL Injection)</a></li>
+        <li><a href="#linpeas" class="nav-linpeas">7. LinPEAS (Privilege Escalation)</a></li>
+        <li><a href="#john" class="nav-john">8. John the Ripper (Cracker)</a></li>
+        <li><a href="#msfvenom" class="nav-msfvenom">9. Msfvenom (Payloads)</a></li>
+        <li><a href="#netcat" class="nav-netcat">10. Netcat (The Network Swiss Knife)</a></li>
+        <li><a href="#burpsuite" class="nav-burp">11. Burp Suite (Web Proxy)</a></li>
+        <li><a href="#wireshark" class="nav-wire">12. Wireshark (Packet Analyzer)</a></li>
+        <li><a href="#impacket" class="nav-impacket">13. Impacket (Windows/AD)</a></li>
+    </ul>
+</nav>
+
+
+
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <header>
+            <h2>Προσωπικό Βιβλίο Σημειώσεων Pentesting</h2>
+            <p>Ένας εξαντλητικός οδηγός μεθοδολογίας, εντολών και παραμέτρων για την καθημερινή σου δουλειά.</p>
+        </header>
+
+        <!-- ==================== SECTION: NMAP ==================== -->
+        <section id="nmap">
+            <h3 class="tool-title nmap-title">🛠️ 1. Nmap (Network Mapper)</h3>
+            
+            <div class="info-box nmap-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το Nmap είναι η αφετηρία κάθε infrastructure penetration test. Χρησιμοποιείται στη φάση του <strong>Active Reconnaissance</strong> για να χαρτογραφήσει το δίκτυο. Μέσω αυτού ανακαλύπτεις ποιες συσκευές είναι ζωντανές (Host Discovery), ποιες θύρες είναι ανοιχτές (Port Scanning), ποιες υπηρεσίες και εκδόσεις τρέχουν πίσω από αυτές (Service Version Detection), καθώς και το λειτουργικό σύστημα (OS Detection).</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Host Discovery -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Ping Sweep (Host Discovery)</div>
+                        <span class="category-tag tag-nmap">Discovery</span>
+                    </div>
+                    <div class="card-desc">Ανακαλύπτει ποιες IP είναι ενεργές σε ένα ολόκληρο υποδίκτυο χωρίς να σκανάρει θύρες.</div>
+                    <div class="code-block">nmap -sn <span>10.10.10.0/24</span></div>
+                </div>
+
+                <!-- Stealth Scan -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Syn Stealth Scan (Default)</div>
+                        <span class="category-tag tag-nmap">Scanning</span>
+                    </div>
+                    <div class="card-desc">Σκανάρει στέλνοντας SYN πακέτα. Δεν ολοκληρώνει το TCP handshake (Half-open), κάνοντάς το πιο διακριτικό και γρήγορο.</div>
+                    <div class="code-block">sudo nmap -sS <span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- Aggressive Scan -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Aggressive Scan (All-in-One)</div>
+                        <span class="category-tag tag-nmap">Scanning</span>
+                    </div>
+                    <div class="card-desc">Ενεργοποιεί OS detection (-O), version scanning (-sV), script scanning (-sC) και traceroute. Πολύ θορυβώδες.</div>
+                    <div class="code-block">nmap -A <span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- Full Port Scan -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Πλήρες Scan Όλων των Θυρών</div>
+                        <span class="category-tag tag-nmap">Deep Scan</span>
+                    </div>
+                    <div class="card-desc">Ελέγχει και τις 65535 θύρες (TCP). Απαραίτητο σε CTFs γιατί οι non-standard θύρες κρύβουν συχνά τα flags.</div>
+                    <div class="code-block">nmap -p- --min-rate 5000 <span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- UDP Scan -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">UDP Port Scanning</div>
+                        <span class="category-tag tag-nmap">UDP</span>
+                    </div>
+                    <div class="card-desc">Σκανάρει για UDP υπηρεσίες. Είναι εξαιρετικά αργό επειδή το UDP δεν στέλνει επιβεβαίωση λήψης.</div>
+                    <div class="code-block">sudo nmap -sU -p 53,161,162 <span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- NSE Vulnerability -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος Ευπαθειών με Scripts (NSE)</div>
+                        <span class="category-tag tag-nmap">Scripts</span>
+                    </div>
+                    <div class="card-desc">Χρησιμοποιεί τη βάση δεδομένων του Nmap Scripting Engine για να εντοπίσει γνωστά exploits και κενά ασφαλείας.</div>
+                    <div class="code-block">nmap --script vuln <span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- Saving Output -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Αποθήκευση Αποτελεσμάτων σε Αρχεία</div>
+                        <span class="category-tag tag-nmap">Output</span>
+                    </div>
+                    <div class="card-desc">Αποθηκεύει τα αποτελέσματα σε 3 formats ταυτόχρονα (normal, grepable, xml) για μετέπειτα ανάλυση.</div>
+                    <div class="code-block">nmap -sC -sV -oA <span>nmap_report</span> <span>[TARGET_IP]</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: GOBUSTER ==================== -->
+        <section id="gobuster">
+            <h3 class="tool-title gobuster-title">📁 2. Gobuster</h3>
+            
+            <div class="info-box gobuster-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το Gobuster επιστρατεύεται <strong>αμέσως μόλις το Nmap αναφέρει ανοιχτή θύρα Web</strong> (80 HTTP, 443 HTTPS, 8080 κλπ.). Χρησιμοποιείται για την ανακάλυψη κρυφών διαδρομών (Directory & File Enumeration) ή Subdomains. Βοηθάει να βρεις σελίδες διαχείρισης, log αρχεία, backups ή κώδικα που δεν είναι προσβάσιμος από τα μενού της ιστοσελίδας.</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Standard Dir -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Βασικό Directory Brute-Forcing</div>
+                        <span class="category-tag tag-gobuster">Web Dir</span>
+                    </div>
+                    <div class="card-desc">Αναζητά φακέλους στον web server χρησιμοποιώντας μια κοινή λίστα (π.χ. directory-list-2.3-medium).</div>
+                    <div class="code-block">gobuster dir -u http://<span>[TARGET_IP]</span> -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt</div>
+                </div>
+
+                <!-- Extensions -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Αναζήτηση Αρχείων με Extensions</div>
+                        <span class="category-tag tag-gobuster">Files</span>
+                    </div>
+                    <div class="card-desc">Ψάχνει για συγκεκριμένα αρχεία. Πολύ χρήσιμο για τον εντοπισμό ευπαθών scripts ή ξεχασμένων αντιγράφων ασφαλείας.</div>
+                    <div class="code-block">gobuster dir -u http://<span>[TARGET_IP]</span> -w [WORDLIST] -x php,html,txt,bak,zip,old</div>
+                </div>
+
+                <!-- Subdomains -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">DNS Subdomain Enumeration</div>
+                        <span class="category-tag tag-gobuster">DNS</span>
+                    </div>
+                    <div class="card-desc">Πραγματοποιεί brute force σε επίπεδο DNS για να εντοπίσει subdomains (π.χ. ://target.com, ://target.com).</div>
+                    <div class="code-block">gobuster dns -d <span>target.com</span> -w /usr/share/wordlists/amass/subdomains-top1mil-5000.txt</div>
+                </div>
+
+                <!-- Advanced Tuning -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Advanced Web Enumeration (Threads & Status Codes)</div>
+                        <span class="category-tag tag-gobuster">Advanced</span>
+                    </div>
+                    <div class="card-desc">Αυξάνει την ταχύτητα (50 threads), αγνοεί τα redirects (301, 302) και παρακάμπτει τα SSL σφάλματα (-k).</div>
+                    <div class="code-block">gobuster dir -u https://<span>[TARGET_IP]</span> -w [WORDLIST] -t 50 -b "301,302,404" -k</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: HYDRA ==================== -->
+ <section id="hydra">
+    <h3 class="tool-title hydra-title">🔑 3. Hydra</h3>
+    
+    <div class="info-box hydra-box">
+        <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+        <p>Το Hydra χρησιμοποιείται στη φάση του <strong>Gaining Access (Exploitation)</strong>. Όταν οι προηγούμενες φάσεις αναγνώρισης αποκαλύψουν πύλες εισόδου με αυθεντικοποίηση (π.χ. SSH, FTP, RDP, Web Forms) και διαθέτεις usernames (είτε από OSINT, είτε default, είτε από enumeration), το Hydra αναλαμβάνει να σπάσει τους κωδικούς μέσω λεξικού (Dictionary Attack).</p>
+    </div>
+
+    <div class="commands-grid">
+        <!-- SSH Brute Force -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">SSH Brute Force (Γνωστός Χρήστης)</div>
+                <span class="category-tag tag-hydra">SSH</span>
+            </div>
+            <div class="card-desc">Χρησιμοποιεί το μικρό -l για έναν συγκεκριμένο χρήστη (admin) και το κεφαλαίο -P για να δοκιμάσει όλο το αρχείο rockyou.txt.</div>
+            <div class="code-block">hydra -l admin -P /usr/share/wordlists/rockyou.txt <span>[TARGET_IP]</span> ssh</div>
+        </div>
+
+        <!-- FTP Attack -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">FTP Επίθεση με Λίστες (User & Pass)</div>
+                <span class="category-tag tag-hydra">FTP</span>
+            </div>
+            <div class="card-desc">Χρησιμοποιεί κεφαλαίο -L και κεφαλαίο -P. Δοκιμάζει συνδυαστικά κάθε χρήστη από το αρχείο users.txt με κάθε κωδικό από το passwords.txt.</div>
+            <div class="code-block">hydra -L users.txt -P passwords.txt <span>[TARGET_IP]</span> ftp</div>
+        </div>
+
+        <!-- Web Form Login -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Web Form Login (HTTP-POST)</div>
+                <span class="category-tag tag-hydra">Web Auth</span>
+            </div>
+            <div class="card-desc">Επιτίθεται σε φόρμες ιστοσελίδων. Χρειάζεται 3 κομμάτια (:): Το path (/login.php), τα ονόματα των input fields (user=^USER^&amp;pass=^PASS^) και το μήνυμα λάθους αποτυχίας (F=Incorrect password).</div>
+            <div class="code-block">hydra -l admin -P rockyou.txt <span>[TARGET_IP]</span> http-post-form "/login.php:user=^USER^&amp;pass=^PASS^:F=Incorrect password"</div>
+        </div>
+
+        <!-- Advanced Tuning -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Ρύθμιση Θύρας και Ταχύτητας</div>
+                <span class="category-tag tag-hydra">Advanced</span>
+            </div>
+            <div class="card-desc">Το -s 2222 στοχεύει το SSH αν τρέχει σε μη-τυπική θύρα. Το -t 16 περιορίζει τις παράλληλες συνδέσεις στις 16 για να μην κρασάρει ο στόχος.</div>
+            <div class="code-block">hydra -l root -P pass.txt -s 2222 -t 16 <span>[TARGET_IP]</span> ssh</div>
+        </div>
+    </div>
+</section>
+
+<section id="enum4linux">
+    <h3 class="tool-title enum4linux-title">👥 4. Enum4linux</h3>
+    
+    <div class="info-box enum4linux-box">
+        <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+        <p>Το Enum4linux είναι ένα εξειδικευμένο εργαλείο που χρησιμοποιείται αποκλειστικά όταν το Nmap σου αναφέρει ότι οι θύρες 139 ή/και 445 (SMB / Samba) είναι ανοιχτές. Είναι εξαιρετικό για Windows συστήματα ή Linux servers που μοιράζονται αρχεία, καθώς προσπαθεί να εκμεταλλευτεί Null Sessions (σύνδεση χωρίς κωδικό) για να μαζέψει πληροφορίες.</p>
+    </div>
+
+    <div class="commands-grid">
+        <!-- All-In-One -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Πλήρης Έλεγχος (Aggressive Enumeration)</div>
+                <span class="category-tag tag-enum4linux">All-In-One</span>
+            </div>
+            <div class="card-desc">Η πιο κλασική επιλογή. Το -a (all) τρέχει όλους τους δυνατούς ελέγχους μαζί: usernames, shares, password policies, groups και πληροφορίες λειτουργικού.</div>
+            <div class="code-block">enum4linux -a <span>[TARGET_IP]</span></div>
+        </div>
+
+        <!-- Users -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Εξαγωγή Λίστας Χρηστών</div>
+                <span class="category-tag tag-enum4linux">Users</span>
+            </div>
+            <div class="card-desc">Προσπαθεί να τραβήξει μόνο τα ονόματα των χρηστών (usernames) μέσω RID cycling. Αυτή τη λίστα χρηστών τη σώζεις και τη χρησιμοποιείς μετά στο Hydra!</div>
+            <div class="code-block">enum4linux -U <span>[TARGET_IP]</span></div>
+        </div>
+
+        <!-- Shares -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Έλεγχος Κοινόχρηστων Φακέλων (Shares)</div>
+                <span class="category-tag tag-enum4linux">Shares</span>
+            </div>
+            <div class="card-desc">Εμφανίζει τα SMB shares. Ψάχνεις για φακέλους με Mapping/Listing: OK χωρίς credentials, καθώς εκεί μπορεί να κρύβονται ευαίσθητα αρχεία.</div>
+            <div class="code-block">enum4linux -S <span>[TARGET_IP]</span></div>
+        </div>
+
+        <!-- Auth -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Enumeration με Χρήση Credentials</div>
+                <span class="category-tag tag-enum4linux">Auth</span>
+            </div>
+            <div class="card-desc">Αν έχεις βρει ήδη ένα έγκυρο ζευγάρι username/password, τα δίνεις με τα -u και -p για να κάνεις enumeration ως συνδεδεμένος χρήστης, παίρνοντας βαθύτερες πληροφορίες.</div>
+            <div class="code-block">enum4linux -u username -p password -a <span>[TARGET_IP]</span></div>
+        </div>
+    </div>
+</section>
+<section id="nikto">
+    <h3 class="tool-title nikto-title">🎯 5. Nikto</h3>
+    
+    <div class="info-box nikto-box">
+        <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+        <p>Το Nikto χρησιμοποιείται αμέσως μετά το Gobuster, όταν έχεις εντοπίσει έναν ενεργό Web Server (HTTP/HTTPS). Είναι ένας γρήγορος Web Vulnerability Scanner που ψάχνει για επικίνδυνα αρχεία, ξεπερασμένες εκδόσεις λογισμικού (outdated server software), εσφαλμένες ρυθμίσεις (misconfigurations) και ευάλωτα server plugins.</p>
+    </div>
+
+    <div class="commands-grid">
+        <!-- Basic -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Βασική Σάρωση Ιστοσελίδας</div>
+                <span class="category-tag tag-nikto">Basic</span>
+            </div>
+            <div class="card-desc">Η πιο απλή μορφή ελέγχου. Σκανάρει την standard θύρα 80 για κοινά κενά ασφαλείας, server headers και επικίνδυνα αρχεία.</div>
+            <div class="code-block">nikto -h <span>[TARGET_IP]</span></div>
+        </div>
+
+        <!-- SSL -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Σάρωση Ασφαλούς Ιστοσελίδας (HTTPS)</div>
+                <span class="category-tag tag-nikto">SSL</span>
+            </div>
+            <div class="card-desc">Αν η ιστοσελίδα τρέχει σε SSL/TLS (θύρα 443), προσθέτεις το flag -ssl για να αναγκάσεις το Nikto να κρυπτογραφήσει την κίνηση και να ελέγξει το πιστοποιητικό.</div>
+            <div class="code-block">nikto -h https://<span>[TARGET_IP]</span> -ssl</div>
+        </div>
+
+        <!-- Custom Port -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Σάρωση σε Μη-Τυπική Θύρα</div>
+                <span class="category-tag tag-nikto">Custom Port</span>
+            </div>
+            <div class="card-desc">Αν το Nmap σου δείξει ότι ο web server τρέχει σε εναλλακτική θύρα (π.χ. 8080 ή 8443), ορίζεις τη θύρα ξεχωριστά με το flag -p.</div>
+            <div class="code-block">nikto -h <span>[TARGET_IP]</span> -p 8080</div>
+        </div>
+
+        <!-- Export -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Αποθήκευση Αποτελεσμάτων</div>
