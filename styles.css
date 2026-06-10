@@ -130,7 +130,7 @@ section { margin-bottom: 6rem; scroll-margin-top: 3rem; }
     border-left: 4px solid var(--accent-color);
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
 }
-.info-box h4 { color: #fff; margin-bottom: 0.6rem; font-size: 1.2rem; }
+.info-box h4 { color: #fff; margin-bottom: 0.6rem; font-size: 1rem; }
 .info-box p { color: var(--text-color); font-size: 1.05rem; }
 
 /* Box Borders mapped to tool colors */
@@ -213,4 +213,112 @@ section { margin-bottom: 6rem; scroll-margin-top: 3rem; }
 @media (max-width: 1024px) {
     nav { width: 240px; padding: 2rem 1rem; }
     main { margin-left: 240px; padding: 2.5rem 2rem; width: calc(100% - 240px); }
+}
+/* --- MOBILE RESPONSIVE DESIGN (FOR PHONES) --- */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column; /* Στοίχιση καθ' ύψος: πρώτα το μενού, μετά το main */
+    }
+
+    /* Μετατροπή Sidebar σε Top Navigation Bar */
+    nav {
+        width: 100%;
+        height: auto;
+        position: relative; /* Ξεκλειδώνει από την άκρη */
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    nav h1 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        padding-bottom: 6px;
+    }
+
+    /* Οριζόντιο scrolling στα εργαλεία για να μην πιάνουν χώρο */
+    nav ul {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    nav ul li {
+        margin-bottom: 0; /* Αφαιρούμε το κάτω κενό */
+    }
+
+    nav ul li a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    nav ul li a:hover {
+        padding-left: 0.8rem; /* Ακύρωση του hover εφέ που σπρώχνει δεξιά */
+    }
+
+    /* Προσαρμογή του Main περιεχομένου */
+    main {
+        margin-left: 0; /* Κατάργηση του κενού αριστερά */
+        width: 100%;
+        padding: 1.5rem 1rem; /* Μικρότερα περιθώρια στις άκρες */
+    }
+
+    header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+    }
+
+    header h2 {
+        font-size: 1.5rem;
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    section {
+        margin-bottom: 3.5rem; /* Πιο μαζεμένα blocks */
+    }
+
+    .tool-title {
+        font-size: 1.6rem;
+    }
+
+    .info-box {
+        padding: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-box p {
+        font-size: 0.95rem;
+    }
+
+    /* Προσαρμογή Καρτών */
+    .card {
+        padding: 1.2rem;
+    }
+
+    .card-header {
+        flex-direction: column; /* Ο τίτλος και το Tag μπαίνουν σε ξεχωριστές γραμμές */
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card-desc {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Terminal Code Blocks */
+    .code-block {
+        padding: 1rem;
+        font-size: 0.85rem; /* Μικραίνουν τα γράμματα στις εντολές για να μη σπάνε εύκολα */
+    }
 }

