@@ -1,0 +1,87 @@
+:root {
+    --bg-color: #0d1117;
+    --border-color: #21262d;
+    --text-color: #8b949e;
+    --text-light: #c9d1d9;
+    --accent-blue: #54a0ff;
+    --accent-purple: #dfb3ff;
+    --code-bg: #161b22;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 750px; /* Πιο στενό για καλύτερη ανάγνωση */
+}
+
+/* Διακριτικό Link Επιστροφής */
+.back-link {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    display: inline-block;
+    margin-bottom: 2.5rem;
+}
+.back-link:hover { color: var(--accent-blue); }
+
+header h1 {
+    font-size: 1.6rem;
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 2rem;
+}
+
+/* Λεπτή, διακριτική γραμμή για κάθε script */
+.script-item {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem 0;
+}
+.script-item:last-of-type { border-bottom: none; }
+
+.script-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+}
+
+.script-name {
+    font-size: 1.05rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+/* Μικρό, elegant κουμπί Copy */
+.mini-copy {
+    background: transparent;
+    border: none;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 2px 6px;
+    transition: color 0.2s;
+}
+.mini-copy:hover { color: var(--accent-purple); }
+
+/* Καθαρό Code Block χωρίς "θορυβώδη" φόντα */
+pre {
+    background-color: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    color: #7ee787;
+    margin: 0;
+    overflow-x: auto;
+}
+pre span { color: var(--text-color); }

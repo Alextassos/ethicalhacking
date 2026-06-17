@@ -103,6 +103,49 @@ header {
 header h2 { font-size: 2rem; color: #fff; margin-bottom: 0.6rem; }
 header p { color: var(--text-muted); font-size: 1.2rem; }
 
+#script{
+    border: 1px solid rgba(225,255,255,0.2) ;
+    border-radius: 14px;
+    padding: 10px;
+    margin-bottom:20px ;
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    translate: all 0.2s ease;
+}
+
+#scriptbtn{
+    text-decoration: none;
+    color:var(--text-color) ;
+    font-size: 16px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    
+}
+
+
+#script:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.05);
+    
+    /* 1. Καθιστά το κανονικό border διάφανο για να φανεί το gradient */
+    border-color: transparent; 
+    
+    /* 2. Το Μοβ-Μπλε gradient που μπαίνει ΜΟΝΟ στο περίγραμμα */
+    background-image: linear-gradient(var(--bg-color), var(--bg-color)), 
+                      linear-gradient(45deg, #54a0ff, #dfb3ff);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+#script:hover #scriptbtn {
+    color: #fff; /* Το κείμενο γίνεται πιο φωτεινό στο hover */
+}
+
+
+
 /* --- SECTIONS & DYNAMIC TITLES --- */
 section { margin-bottom: 6rem; scroll-margin-top: 3rem; }
 .tool-title { font-size: 2.2rem; margin-bottom: 1.2rem; font-weight: 700; }
