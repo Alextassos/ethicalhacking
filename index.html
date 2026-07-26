@@ -29,6 +29,7 @@
 
     <h1>📖 Cyber Book</h1>
     <ul>
+        <li><a href="#ffuf" class="nav-ffuf">2β. FFUF (Web Fuzzer)</a></li>
         <li><a href="#nmap" class="nav-nmap">1. Nmap (Network Mapper)</a></li>
         <li><a href="#gobuster" class="nav-gobuster">2. Gobuster (Web/DNS)</a></li>
         <li><a href="#hydra" class="nav-hydra">3. Hydra (Brute Forcer)</a></li>
@@ -136,6 +137,67 @@
                 </div>
             </div>
         </section>
+<!-- ==================== SECTION: FFUF ==================== -->
+<section id="ffuf">
+    <h3 class="tool-title ffuf-title">⚡ 2β. FFUF (Fuzz Faster U Fool)</h3>
+    
+    <div class="info-box ffuf-box">
+        <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+        <p>Το FFUF είναι ένα εξαιρετικά γρήγορο εργαλείο για <strong>Web Fuzzing</strong> γραμμένο σε Go. Χρησιμοποιείται για να αντικαθιστά τη λέξη-κλειδί <code>FUZZ</code> με λέξεις από μια λίστα (wordlist). Είναι ιδανικό για γρήγορη ανακάλυψη αρχείων, καταλόγων, παραμέτρων HTTP (Parameter Fuzzing) καθώς και για επιθέσεις Brute Force σε φόρμες σύνδεσης.</p>
+    </div>
+
+    <div class="commands-grid">
+        <!-- Directory Fuzzing -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Ανακάλυψη Καταλόγων (Directory Discovery)</div>
+                <span class="category-tag tag-ffuf">Discovery</span>
+            </div>
+            <div class="card-desc">Ψάχνει για κρυφούς φακέλους αντικαθιστώντας τη λέξη FUZZ στο τέλος του URL.</div>
+            <div class="code-block">ffuf -u http://<span>[TARGET_IP]</span>/FUZZ -w /usr/share/wordlists/dirb/common.txt</div>
+        </div>
+
+        <!-- File Extensions -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Ανακάλυψη Αρχείων με Extensions</div>
+                <span class="category-tag tag-ffuf">Files</span>
+            </div>
+            <div class="card-desc">Αναζητά συγκεκριμένους τύπους αρχείων (π.χ. .txt, .php, .sh) χρησιμοποιώντας τη wordlist.</div>
+            <div class="code-block">ffuf -u http://<span>[TARGET_IP]</span>/FUZZ.php -w /usr/share/wordlists/dirb/common.txt</div>
+        </div>
+
+        <!-- Content Filtering -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Φιλτράρισμα Αποτελεσμάτων (Κώδικες & Μέγεθος)</div>
+                <span class="category-tag tag-ffuf">Filtering</span>
+            </div>
+            <div class="card-desc">Κρύβει τα False Positives. Το -fc κρύβει HTTP codes (π.χ. 404) και το -fs κρύβει συγκεκριμένο μέγεθος σε bytes.</div>
+            <div class="code-block">ffuf -u http://<span>[TARGET_IP]</span>/FUZZ -w <span>[WORDLIST]</span> -fc 404 -fs 1240</div>
+        </div>
+
+        <!-- Login Brute Force -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Brute Force σε POST Login Form</div>
+                <span class="category-tag tag-ffuf">Brute Force</span>
+            </div>
+            <div class="card-desc">Στέλνει POST δεδομένα για να σπάσει κωδικούς. Το -fr φιλτράρει (απορρίπτει) το μήνυμα λάθους της σελίδας.</div>
+            <div class="code-block">ffuf -u http://<span>[TARGET_IP]</span>/login.php -X POST -d "username=admin&password=FUZZ" -w /usr/share/wordlists/rockyou.txt -fr "Invalid"</div>
+        </div>
+
+        <!-- Parameter Fuzzing -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Ανακάλυψη Παραμέτρων (Parameter Fuzzing)</div>
+                <span class="category-tag tag-ffuf">Parameters</span>
+            </div>
+            <div class="card-desc">Ψάχνει για κρυφές παραμέτρους URL (π.χ. ?file= ή ?id=) που μπορεί να είναι ευπαθείς σε LFI ή SQLi.</div>
+            <div class="code-block">ffuf -u http://<span>[TARGET_IP]</span>/index.php?FUZZ=test -w /usr/share/wordlists/dirb/common.txt -fs 0</div>
+        </div>
+    </div>
+</section>
 
         <!-- ==================== SECTION: GOBUSTER ==================== -->
         <section id="gobuster">
